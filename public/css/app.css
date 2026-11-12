@@ -1,0 +1,54 @@
+/* Halaman aplikasi (login, form UMKM, admin): Bootstrap 5 + palet warna yang sama dengan landing page */
+:root {
+  --forest: #0b4a38; --forest-2: #0f5c46; --leaf: #1f7a52; --sun: #f58220;
+  --sage: #e3eee4; --peach: #fde6d3; --sky: #d4e8ec; --paper: #fbfaf5; --ink: #10261d; --muted: #55675e;
+  --shadow: 0 18px 40px -18px rgba(11, 74, 56, .35);
+  --bs-body-font-family: "Figtree", system-ui, sans-serif;
+  --bs-body-bg: var(--paper); --bs-body-color: var(--ink);
+  --bs-primary: #0b4a38; --bs-primary-rgb: 11, 74, 56;
+  --bs-link-color: #0b4a38; --bs-link-color-rgb: 11, 74, 56;
+  --bs-link-hover-color: #0f5c46; --bs-link-hover-color-rgb: 15, 92, 70;
+  --bs-border-radius: 12px;
+}
+h1, h2, h3, h4, h5 { font-family: "Fraunces", Georgia, serif; font-variation-settings: "SOFT" 100; letter-spacing: -.01em; }
+.btn { border-radius: 999px; font-weight: 700; padding: .55rem 1.3rem; }
+.btn-sm { padding: .3rem .85rem; }
+.btn-primary { --bs-btn-bg: #0b4a38; --bs-btn-border-color: #0b4a38; --bs-btn-hover-bg: #0f5c46; --bs-btn-hover-border-color: #0f5c46; --bs-btn-active-bg: #0f5c46; --bs-btn-active-border-color: #0f5c46; --bs-btn-disabled-bg: #0b4a38; --bs-btn-disabled-border-color: #0b4a38; }
+.btn-outline-primary { --bs-btn-color: #0b4a38; --bs-btn-border-color: #0b4a38; --bs-btn-hover-bg: #0b4a38; --bs-btn-hover-border-color: #0b4a38; --bs-btn-active-bg: #0b4a38; --bs-btn-active-border-color: #0b4a38; }
+.btn-sun { --bs-btn-color: #fff; --bs-btn-bg: var(--sun); --bs-btn-border-color: var(--sun); --bs-btn-hover-color: #fff; --bs-btn-hover-bg: #e36f0f; --bs-btn-hover-border-color: #e36f0f; }
+.form-control:focus, .form-select:focus, .form-check-input:focus { border-color: var(--leaf); box-shadow: 0 0 0 .22rem rgba(31, 122, 82, .2); }
+.form-check-input:checked { background-color: var(--forest); border-color: var(--forest); }
+.form-label { font-weight: 600; }
+.req::after { content: " *"; color: #c0392b; }
+
+.app-nav { background: var(--forest); }
+.app-nav .navbar-brand img { height: 40px; border-radius: 8px; }
+.app-nav .nav-link { color: rgba(255, 255, 255, .8); font-weight: 600; }
+.app-nav .nav-link:hover, .app-nav .nav-link.active { color: #fff; }
+.app-nav .nav-link.active { box-shadow: inset 0 -3px 0 var(--sun); }
+
+.card { border: 0; border-radius: 20px; box-shadow: var(--shadow); }
+.card-title-sec { display: flex; align-items: center; gap: .6rem; font-size: 1.25rem; margin-bottom: 1rem; }
+.card-title-sec .num { width: 32px; height: 32px; border-radius: 50%; background: var(--sun); color: #fff; display: grid; place-items: center; font: 700 .95rem "Figtree", sans-serif; flex: none; }
+.page-head { background: var(--sage); padding: 2rem 0; margin-bottom: 2rem; }
+.page-head h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); margin: 0; }
+
+.auth-wrap { min-height: calc(100vh - 72px); display: grid; place-items: center; padding: 2rem 1rem; background: linear-gradient(160deg, var(--sage), var(--peach)); }
+.auth-card { width: min(440px, 100%); }
+.auth-card img { height: 64px; border-radius: 12px; }
+
+.st { font-weight: 700; font-size: .78rem; padding: .3rem .7rem; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.st-pending { background: #fff1d6; color: #8a5a00; }
+.st-approved { background: #d6f1e1; color: #14673d; }
+.st-rejected { background: #fadcd9; color: #a1281c; }
+
+.stat { border-radius: 20px; padding: 1.25rem; background: #fff; box-shadow: var(--shadow); }
+.stat b { font: 600 2.2rem "Fraunces", serif; display: block; line-height: 1.1; }
+.stat span { color: var(--muted); font-weight: 600; }
+
+.thumb { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; border: 1px solid #dde6df; background: var(--sage); }
+.thumb-box { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: .25rem; font-size: .8rem; }
+.file-pill { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .8rem; border-radius: 999px; background: var(--sage); font-weight: 600; font-size: .85rem; }
+.legal-box { border: 1px solid #dde6df; border-radius: 14px; padding: .9rem 1rem; background: #fff; height: 100%; }
+.table > :not(caption) > * > * { vertical-align: middle; }
+.table-wrap { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
