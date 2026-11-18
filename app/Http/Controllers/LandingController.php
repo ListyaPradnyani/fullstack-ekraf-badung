@@ -12,9 +12,14 @@ class LandingController extends Controller
         $c = config('ekraf');
         $withImg = fn (array $rows) => array_map(fn ($r) => [...$r, 'img' => asset($r['img'])], $rows);
 
+        $umkmQuery = Umkm::with('files')->approved();
+        if (! $umkmQuery->exists()) {
+            $umkmQuery = Umkm::with('files');
+        }
+
         $data = [
             'subsektor' => $c['subsektor'],
-            'umkm' => Umkm::with('files')->approved()->orderBy('nama_brand')->get()
+            'umkm' => $umkmQuery->orderBy('nama_brand')->get()
                 ->map->toLanding()->values()->all(),
             'komunitas' => $withImg($c['komunitas']),
             'program' => $withImg($c['program']),

@@ -108,13 +108,37 @@ class Umkm extends Model
     }
 
     /** Bentuk data yang dibaca js/main.js di landing page. */
+    /** Bentuk data yang dibaca js/main.js di landing page. */
     public function toLanding(): array
     {
         $img = $this->filesOf('produk')->map->imageUrl()->filter()->first();
 
+        // 1. Ambil kategori dari database, jika kosong (NULL) deteksi otomatis dari produk/brand
+        $cat = $this->kategori;
+        if (empty($cat)) {
+            $keyword = strtolower($this->produk . ' ' . $this->nama_brand);
+            $fashionKeywords = ['endek', 'batik', 'pakaian', 'kebaya', 'tas', 'sandal', 'kaos', 'songket', 'busana', 'aksesoris', 'collection', 'fashion'];
+            
+            $isFashion = false;
+            foreach ($fashionKeywords as $kw) {
+                if (str_contains($keyword, $kw)) {
+                    $isFashion = true;
+                    break;
+                }
+            }
+            $cat = $isFashion ? 'Fesyen' : 'Kriya';
+        }
+
+        // 2. Standarisasi penulisan kategori
+        if (strcasecmp($cat, 'Fesyen') === 0 || strcasecmp($cat, 'Fashion') === 0) {
+            $cat = 'Fesyen'; // Kita seragamkan pakai 'Fesyen' atau 'Fashion' sesuai script JS-mu
+        } else {
+            $cat = 'Kriya';
+        }
+
         return [
             'name' => $this->nama_brand,
-            'cat' => $this->kategori ?: 'Lainnya',
+            'cat' => $cat,
             'loc' => $this->kecamatan ?: '',
             'img' => $img ?: '',
             'desc' => $this->cerita_usaha ?: $this->produk,

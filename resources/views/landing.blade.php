@@ -197,7 +197,7 @@
     <section id="umkm" class="band-peach" data-menu="umkm">
       <div class="container">
         <div class="section-head reveal">
-          <h2>Jajan karya lokal yuk</h2>
+          <h2>Jelajahi Produk Lokal</h2>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
         <div class="toolbar">
