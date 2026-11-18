@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
+  @unless(View::hasSection('no-nav'))
   <nav class="navbar navbar-expand-lg app-nav">
     <div class="container">
       <a class="navbar-brand" href="{{ route('home') }}" aria-label="Beranda Ekraf Badung">
@@ -52,10 +53,12 @@
       </div>
     </div>
   </nav>
+  @endunless
 
   @yield('head')
 
-  <main class="pb-5">
+  <main class="@yield('main-class', 'pb-5')">
+    @if(session('ok') || ($errors->any() && ! View::hasSection('inline-errors')))
     <div class="container mt-3">
       @if(session('ok'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('ok') }}
@@ -68,6 +71,7 @@
         </div>
       @endif
     </div>
+    @endif
     @yield('content')
   </main>
 
