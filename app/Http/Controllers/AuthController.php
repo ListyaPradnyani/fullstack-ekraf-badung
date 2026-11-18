@@ -19,7 +19,11 @@ class AuthController extends Controller
         $cred = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-        ], [], ['email' => 'email', 'password' => 'password']);
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+        ], ['email' => 'Email', 'password' => 'Password']);
 
         if (! Auth::attempt($cred, $request->boolean('remember'))) {
             return back()->withInput($request->only('email'))
@@ -43,10 +47,14 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Konfirmasi password tidak sama.',
             'password.min' => 'Password minimal 8 karakter.',
-        ], ['name' => 'nama']);
+        ], ['name' => 'Nama', 'email' => 'Email', 'password' => 'Password']);
 
         $user = User::create($data + ['role' => 'user']);
         Auth::login($user);

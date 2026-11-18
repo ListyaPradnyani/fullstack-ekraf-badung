@@ -33,9 +33,498 @@ h1, h2, h3, h4, h5 { font-family: "Fraunces", Georgia, serif; font-variation-set
 .page-head { background: var(--sage); padding: 2rem 0; margin-bottom: 2rem; }
 .page-head h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); margin: 0; }
 
-.auth-wrap { min-height: calc(100vh - 72px); display: grid; place-items: center; padding: 2rem 1rem; background: linear-gradient(160deg, var(--sage), var(--peach)); }
-.auth-card { width: min(440px, 100%); }
-.auth-card img { height: 64px; border-radius: 12px; }
+/* ===== Auth Layouts (Login & Register - Tokopedia Style 2-Column) ===== */
+
+/* Topbar Minimalis (Tanpa Navbar Default) */
+.auth-tokopedia-topbar {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(11, 74, 56, 0.08);
+  background: #ffffff;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: transform .2s ease, opacity .2s ease;
+}
+
+.auth-brand-pill:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.auth-brand-pill img {
+  height: 48px;
+  width: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(11, 74, 56, 0.12);
+  transition: box-shadow .2s ease;
+}
+
+.auth-brand-pill:hover img {
+  box-shadow: 0 6px 16px rgba(11, 74, 56, 0.18);
+}
+
+.auth-brand-title {
+  font-family: var(--display), "Fraunces", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--forest);
+  letter-spacing: -0.02em;
+}
+
+.auth-nav-back-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid #d4ded8;
+  background: var(--paper);
+  transition: all .2s ease;
+}
+
+.auth-nav-back-link:hover {
+  background: var(--sage);
+  color: var(--forest);
+  border-color: var(--leaf);
+  transform: translateX(-2px);
+}
+
+/* Container Utama Halaman Auth (Split 2-Column) */
+.auth-tokopedia-main {
+  min-height: calc(100vh - 75px);
+  display: flex;
+  align-items: center;
+  padding: 3rem 0;
+  background: 
+    radial-gradient(ellipse 65% 55% at 10% 20%, rgba(227, 238, 228, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(253, 230, 211, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(212, 232, 236, 0.35) 0%, transparent 70%),
+    #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Kolom Kiri: Ilustrasi & Showcase */
+.auth-showcase-panel {
+  text-align: center;
+  padding-right: 1.5rem;
+  position: relative;
+}
+
+.auth-illustration-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.auth-illustration-svg {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 14px 28px rgba(11, 74, 56, 0.08));
+}
+
+/* Floating Pills pada Ilustrasi (Micro-Interactions) */
+.floating-pill {
+  position: absolute;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(11, 74, 56, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 10px 25px -5px rgba(11, 74, 56, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--forest);
+  animation: floatBadge 4.5s ease-in-out infinite;
+  z-index: 3;
+}
+
+.floating-pill.pill-top-left {
+  top: 10%;
+  left: -2%;
+  animation-delay: 0s;
+}
+
+.floating-pill.pill-bottom-right {
+  bottom: 12%;
+  right: -2%;
+  animation-delay: 2.25s;
+}
+
+@keyframes floatBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.auth-showcase-title {
+  font-family: var(--display), "Fraunces", Georgia, serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.15rem);
+  font-weight: 700;
+  color: var(--forest);
+  margin-top: 1.25rem;
+  margin-bottom: 0.65rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.auth-showcase-desc {
+  font-family: var(--body), "Figtree", sans-serif;
+  font-size: 0.98rem;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+.auth-feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.feature-pill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1rem;
+  background: var(--paper);
+  border: 1px solid #dce7df;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--forest);
+  box-shadow: 0 2px 8px rgba(11, 74, 56, 0.04);
+}
+
+/* Kolom Kanan: Card Login Tokopedia Style */
+.auth-card-tokopedia {
+  background: #ffffff;
+  border-radius: 28px;
+  border: 1px solid rgba(11, 74, 56, 0.1);
+  box-shadow: 0 24px 60px -15px rgba(11, 74, 56, 0.14), 0 4px 14px rgba(0, 0, 0, 0.02);
+  padding: 2.75rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 575.98px) {
+  .auth-card-tokopedia {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+  }
+}
+
+.auth-card-header {
+  margin-bottom: 2rem;
+}
+
+.auth-card-title {
+  font-family: var(--display), "Fraunces", Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.auth-card-subtitle {
+  font-family: var(--body), "Figtree", sans-serif;
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.auth-card-subtitle a {
+  color: var(--forest);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.auth-card-subtitle a:hover {
+  color: var(--sun);
+  text-decoration: underline;
+}
+
+/* Form Fields - Pill style dengan ikon (sesuai referensi foto 1 & 2) */
+.auth-field-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.auth-field-label {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.45rem;
+  padding-left: 0.75rem;
+}
+
+.auth-input-pill-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-pill-wrap .input-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #7b8e84;
+  pointer-events: none;
+  transition: color .2s ease;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-input-pill {
+  width: 100%;
+  height: 52px;
+  border-radius: 999px;
+  border: 1.5px solid #d4dfd8;
+  background-color: #fbfdfc;
+  padding: 0 1.25rem 0 3.25rem;
+  font-family: var(--body), "Figtree", sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  outline: none;
+  transition: all .2s ease;
+}
+
+/* Sembunyikan icon mata bawaan browser (Edge, IE, Chromium) agar tidak duplikat dengan tombol mata kustom */
+.auth-input-pill::-ms-reveal,
+.auth-input-pill::-ms-clear,
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.auth-input-pill::placeholder {
+  color: #9cb0a5;
+  font-size: 0.92rem;
+}
+
+.auth-input-pill:hover {
+  border-color: #b3c7bc;
+  background-color: #ffffff;
+}
+
+.auth-input-pill:focus {
+  border-color: var(--leaf);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(31, 122, 82, 0.16);
+}
+
+.auth-input-pill-wrap:focus-within .input-icon {
+  color: var(--forest);
+}
+
+.auth-input-pill.has-toggle {
+  padding-right: 3.25rem;
+}
+
+.auth-btn-pwd-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: #7b8e84;
+  cursor: pointer;
+  transition: all .2s ease;
+  z-index: 2;
+}
+
+.auth-btn-pwd-toggle:hover {
+  color: var(--forest);
+  background: rgba(11, 74, 56, 0.06);
+}
+
+.auth-btn-pwd-toggle:focus-visible {
+  outline: 2px solid var(--leaf);
+}
+
+/* Validasi Error */
+.auth-input-pill.is-invalid {
+  border-color: #dc3545 !important;
+  background-color: #fff9f9;
+}
+
+.auth-input-pill.is-invalid:focus {
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.15) !important;
+}
+
+.auth-field-error {
+  font-size: 0.82rem;
+  color: #dc3545;
+  margin-top: 0.4rem;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Checkbox Row (Ingat saya) */
+.auth-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  margin-bottom: 1.75rem;
+  padding: 0 0.5rem;
+}
+
+.auth-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  margin: 0;
+}
+
+.auth-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid #bdcebf;
+  accent-color: var(--forest);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+/* Tombol Masuk - Pill style dengan gradien warna tema (Photo 1) */
+.auth-submit-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--leaf) 100%);
+  color: #ffffff;
+  font-family: var(--body), "Figtree", sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 24px -6px rgba(11, 74, 56, 0.38);
+  cursor: pointer;
+  transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-submit-btn:hover {
+  background: linear-gradient(135deg, var(--forest-2) 0%, #248b5e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -6px rgba(11, 74, 56, 0.48);
+  color: #ffffff;
+}
+
+.auth-submit-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px -3px rgba(11, 74, 56, 0.32);
+}
+
+.auth-submit-btn:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+
+/* Catatan Kebijakan / Terms (Persis Pola Tokopedia) */
+.auth-card-terms {
+  text-align: center;
+  margin-top: 1.75rem;
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.auth-card-terms a {
+  color: var(--forest);
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color .2s ease;
+}
+
+.auth-card-terms a:hover {
+  color: var(--sun);
+}
+
+/* Fallback untuk halaman register klasik bila masih menggunakan auth-wrap & auth-card */
+.auth-wrap {
+  min-height: calc(100vh - 76px);
+  display: grid;
+  place-items: center;
+  padding: 2.5rem 1rem;
+  background:
+    radial-gradient(ellipse 65% 55% at 15% 15%, rgba(227, 238, 228, 0.95) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 85%, rgba(253, 230, 211, 0.85) 0%, transparent 70%),
+    linear-gradient(160deg, var(--sage), var(--peach));
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card {
+  width: min(440px, 100%);
+  background: #ffffff;
+  border: 1px solid rgba(11, 74, 56, 0.09);
+  border-radius: 28px;
+  box-shadow: 0 24px 60px -15px rgba(11, 74, 56, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card img {
+  height: 64px;
+  border-radius: 12px;
+}
 
 .st { font-weight: 700; font-size: .78rem; padding: .3rem .7rem; border-radius: 999px; white-space: nowrap; display: inline-block; }
 .st-pending { background: #fff1d6; color: #8a5a00; }
