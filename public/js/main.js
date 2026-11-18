@@ -39,7 +39,7 @@
   }).join("");
 
   /* ===== UMKM: filter + pencarian + popup ===== */
-  const cats = ["Semua", ...new Set(D.umkm.map(u => u.cat))];
+  const cats = ["Semua", "Fashion", "Kriya"];
   const filters = $("#umkm-filters");
   const grid = $("#umkm-grid");
   const input = $("#umkm-search");
@@ -48,11 +48,19 @@
 
   filters.innerHTML = cats.map((c, i) => `<button class="filter${i === 0 ? " active" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
 
+  const matchCat = (cat, filter) => {
+    if (filter === "Semua") return true;
+    const c = (cat || "").toLowerCase();
+    if (filter === "Fashion") return c === "fashion" || c === "fesyen";
+    if (filter === "Kriya") return c === "kriya";
+    return c === filter.toLowerCase();
+  };
+
   function renderUmkm() {
     const q = input.value.trim().toLowerCase();
     const list = D.umkm.map((u, idx) => ({ u, idx })).filter(({ u }) =>
-      (activeCat === "Semua" || u.cat === activeCat) &&
-      (u.name.toLowerCase().includes(q) || u.loc.toLowerCase().includes(q)));
+      matchCat(u.cat, activeCat) &&
+      (u.name.toLowerCase().includes(q) || (u.loc && u.loc.toLowerCase().includes(q))));
     const anim = firstRender ? "reveal" : "pop";
     grid.innerHTML = list.length
       ? list.map(({ u, idx }, i) => `
@@ -61,7 +69,7 @@
           <div class="u-body">
             <span class="u-cat">${esc(u.cat)}</span>
             <h3>${esc(u.name)}</h3>
-            <p><i class="bi bi-geo-alt-fill"></i> ${esc(u.loc)}, Badung</p>
+            <p><i class="bi bi-geo-alt-fill"></i> ${esc(u.loc || "Badung")}, Badung</p>
             <span class="u-more">Lihat detail <i class="bi bi-arrow-up-right"></i></span>
           </div>
         </article>`).join("")
@@ -86,11 +94,13 @@
     const wa = u.wa ? `https://wa.me/${encodeURIComponent(u.wa)}?text=${encodeURIComponent("Halo " + u.name + ", saya lihat info di website Ekraf Badung.")}` : "";
     const ig = u.ig ? `https://instagram.com/${encodeURIComponent(u.ig)}` : "";
     const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(u.name + " " + (u.loc || "") + " Badung")}`;
-    $("#m-media").innerHTML = photo(u.img, "arch", idx, u.name);
+    $("#m-media").innerHTML = u.img
+      ? `<div class="m-photo-wrap"><img src="${esc(u.img)}" alt="${esc(u.name)}" class="m-photo" onerror="this.parentElement.classList.add('has-fallback'); this.remove();"><div class="m-fallback"><i class="bi bi-shop"></i><span>${esc(u.name)}</span></div></div>`
+      : `<div class="m-photo-wrap has-fallback"><div class="m-fallback"><i class="bi bi-shop"></i><span>${esc(u.name)}</span></div></div>`;
     $("#m-body").innerHTML = `
       <span class="tag">${esc(u.cat)}</span>
       <h3 id="m-title">${esc(u.name)}</h3>
-      <p class="m-loc"><i class="bi bi-geo-alt-fill"></i> ${esc(u.loc)}, Badung</p>
+      <p class="m-loc"><i class="bi bi-geo-alt-fill"></i> ${esc(u.loc || "Badung")}, Badung</p>
       <p class="m-desc">${esc(u.desc || "")}</p>
       ${u.products && u.products.length ? `<h4>Produk / layanan</h4><div class="m-chips">${u.products.map(p => `<span>${esc(p)}</span>`).join("")}</div>` : ""}
       <ul class="m-info">

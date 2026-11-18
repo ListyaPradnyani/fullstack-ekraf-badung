@@ -1,23 +1,139 @@
-{{-- Form UMKM Directory di landing page. Struktur sesuai slide "Struktur Website": --}}
-{{-- nama pelaku, nama brand, kecamatan (6), no. WA, alamat, foto KTP/NIB/produk, media sosial, cerita usaha, legalitas lain. --}}
+{{-- Section Pendaftaran UMKM: Dual-Column Split Grid (@guest) & Compact Direct Form (@auth) --}}
 @php
   $adaAkun = auth()->check();
   $adalahAdmin = $adaAkun && auth()->user()->isAdmin();
   $pilihLegal = old('legalitas', []);
   $pilihSiap = old('kesiapan', []);
 @endphp
-<div class="row justify-content-center">
-  <div class="col-12 col-lg-9 mx-auto">
-    <div class="reg" id="daftar-umkm">
-      <div class="reg-head">
-        <span class="tag">Gabung direktori</span>
-        <h3>Daftarkan UMKM&#8209;mu</h3>
-        <p>Isi data usahamu di sini. Akun kamu <b>otomatis dibuat</b> saat data terkirim, jadi kamu bisa masuk lagi untuk melihat dan mengedit datamu. Data tampil di website setelah dikurasi admin.</p>
+
+@guest
+  {{-- Tampilan untuk Tamu (Belum Login): Split Grid 2 Kolom (Kiri: Preview/Overview, Kanan: CTA) --}}
+  <div class="reg reg-guest-wrap" id="daftar-umkm">
+    <div class="row g-4 align-items-stretch reg-split">
+      {{-- Kolom Kiri: Overview/Preview Form --}}
+      <div class="col-12 col-lg-7">
+        <div class="reg-preview-card">
+          <div class="reg-preview-head">
+            <span class="tag">Overview Pendaftaran</span>
+            <h3>Tahapan Registrasi UMKM Ekraf</h3>
+            <p>Siapkan informasi dan berkas usahamu untuk bergabung dalam ekosistem ekonomi kreatif Kabupaten Badung.</p>
+          </div>
+
+          <div class="reg-preview-steps">
+            <div class="reg-pstep">
+              <span class="pstep-num">1</span>
+              <div class="pstep-body">
+                <h4>Data &amp; Identitas Usaha</h4>
+                <p>Nama pelaku, nama brand, kecamatan di Badung, subsektor ekraf, kontak WhatsApp, dan alamat usaha.</p>
+              </div>
+            </div>
+
+            <div class="reg-pstep">
+              <span class="pstep-num">2</span>
+              <div class="pstep-body">
+                <h4>Karya &amp; Produk Unggulan</h4>
+                <p>Rincian produk kreatif yang diajukan serta cerita singkat perjalanan &amp; keunikan produkmu.</p>
+              </div>
+            </div>
+
+            <div class="reg-pstep">
+              <span class="pstep-num">3</span>
+              <div class="pstep-body">
+                <h4>Foto &amp; Dokumen Kurasi</h4>
+                <p>Foto KTP &amp; NIB (khusus verifikasi internal kurator) serta 1–5 foto produk kreatif beresolusi baik.</p>
+              </div>
+            </div>
+
+            <div class="reg-pstep">
+              <span class="pstep-num">4</span>
+              <div class="pstep-body">
+                <h4>Legalitas &amp; Komitmen Program</h4>
+                <p>Legalitas tambahan yang dimiliki (HKI, Halal, dll) serta kesiapan keikutsertaan event Go Ekraf.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="reg-preview-foot">
+            <i class="bi bi-shield-check"></i>
+            <span>Data diverifikasi secara aman oleh tim kurator Komite Ekraf Badung.</span>
+          </div>
+        </div>
       </div>
 
-      @if($adalahAdmin)
-        <div class="reg-note">Kamu masuk sebagai admin. Kelola data UMKM dari <a href="{{ route('admin.umkm.index') }}"><b>panel admin</b></a>.</div>
-      @else
+      {{-- Kolom Kanan: Call to Action (CTA) & Tombol Aksi --}}
+      <div class="col-12 col-lg-5">
+        <div class="reg-cta-card">
+          <div class="reg-cta-badge">
+            <i class="bi bi-stars"></i>
+            <span>Akses Direktori Resmi</span>
+          </div>
+
+          <h3 class="reg-cta-title">Kembangkan Usaha Kreatifmu Bersama Kami</h3>
+          <p class="reg-cta-desc">Daftarkan produk dan brand lokalmu agar terhubung dengan jejaring ekonomi kreatif, kurasi event kabupaten, dan publikasi luas.</p>
+
+          <ul class="reg-cta-benefits">
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <div>
+                <b>Publikasi Profil Terkurasi</b>
+                <span>Tampil di direktori website resmi Ekraf Badung untuk publik &amp; wisatawan.</span>
+              </div>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <div>
+                <b>Prioritas Kurasi Event</b>
+                <span>Kesempatan ikut serta dalam pameran, festival, dan program Go Ekraf Badung.</span>
+              </div>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <div>
+                <b>Kelola Mandiri Portofolio</b>
+                <span>Perbarui deskripsi produk dan jam operasional kapan saja lewat akunmu.</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="reg-cta-actionbox">
+            <div class="reg-cta-note">
+              <i class="bi bi-info-circle"></i>
+              <span>Untuk menjaga validitas data, pendaftaran dilakukan melalui akun terdaftar.</span>
+            </div>
+            <div class="reg-cta-buttons">
+              <a href="{{ route('login') }}" class="btn btn-forest w-100">
+                <i class="bi bi-box-arrow-in-right"></i>&nbsp; Masuk untuk Mendaftar
+              </a>
+              <a href="{{ route('register') }}" class="btn btn-ghost w-100">
+                <i class="bi bi-person-plus"></i>&nbsp; Belum punya akun? Daftar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@else
+  {{-- Tampilan untuk Pengguna Login (@auth): Form Ramping & Compact Langsung Terhubung ke user_id --}}
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-9 mx-auto">
+      <div class="reg reg-auth" id="daftar-umkm">
+        <div class="reg-head">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <span class="tag">Formulir Terhubung</span>
+            <div class="reg-user-pill">
+              <i class="bi bi-person-check-fill"></i>
+              <span>Masuk sebagai: <b>{{ auth()->user()->name }}</b></span>
+            </div>
+          </div>
+          <h3>Daftarkan UMKM-mu</h3>
+          <p>Lengkapi formulir di bawah ini. Data UMKM akan otomatis terhubung dengan akunmu dan ditinjau oleh tim kurator sebelum tayang di direktori publik.</p>
+        </div>
+
+        @if($adalahAdmin)
+          <div class="reg-note">Kamu masuk sebagai admin. Kamu dapat mengisi form ini atau mengelola data UMKM dari <a href="{{ route('admin.umkm.index') }}"><b>panel admin</b></a>.</div>
+        @endif
+
         @if($errors->any())
           <div class="reg-alert" role="alert" tabindex="-1">
             <b>Ada isian yang perlu diperbaiki:</b>
@@ -33,7 +149,7 @@
             <div class="row g-2 g-md-3">
               <div class="col-12 col-md-6 f">
                 <label for="r-nama_pelaku">Nama pelaku usaha <i>*</i></label>
-                <input id="r-nama_pelaku" name="nama_pelaku" value="{{ old('nama_pelaku') }}" required autocomplete="name" class="@error('nama_pelaku') bad @enderror">
+                <input id="r-nama_pelaku" name="nama_pelaku" value="{{ old('nama_pelaku', auth()->user()->name) }}" required autocomplete="name" class="@error('nama_pelaku') bad @enderror">
                 @error('nama_pelaku')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 col-md-6 f">
@@ -44,7 +160,7 @@
               <div class="col-12 col-md-6 f">
                 <label for="r-kecamatan">Kecamatan <i>*</i></label>
                 <select id="r-kecamatan" name="kecamatan" required class="@error('kecamatan') bad @enderror">
-                  <option value="">Pilih salah satu dari 6 kecamatan di Badung</option>
+                  <option value="">Pilih kecamatan di Badung</option>
                   @foreach(config('ekraf.kecamatan') as $k)<option value="{{ $k }}" @selected(old('kecamatan') === $k)>{{ $k }}</option>@endforeach
                 </select>
                 @error('kecamatan')<small class="err">{{ $message }}</small>@enderror
@@ -73,7 +189,7 @@
               </div>
               <div class="col-12 f">
                 <label for="r-media_sosial">Media sosial yang dimiliki</label>
-                <textarea id="r-media_sosial" name="media_sosial" rows="2" placeholder="Contoh: Instagram @namabrand, TikTok namabrand, Shopee namatoko">{{ old('media_sosial') }}</textarea>
+                <textarea id="r-media_sosial" name="media_sosial" rows="2" placeholder="Contoh: Instagram @namabrand, TikTok namabrand">{{ old('media_sosial') }}</textarea>
                 @error('media_sosial')<small class="err">{{ $message }}</small>@enderror
               </div>
             </div>
@@ -84,20 +200,20 @@
             <div class="row g-2 g-md-3">
               <div class="col-12 f">
                 <label for="r-produk">Produk yang diajukan <i>*</i></label>
-                <textarea id="r-produk" name="produk" rows="2" required placeholder="Satu produk per baris, mis. Kain endek" class="@error('produk') bad @enderror">{{ old('produk') }}</textarea>
+                <textarea id="r-produk" name="produk" rows="2" required placeholder="Satu produk per baris, mis. Kain tenun, Aksesoris perak" class="@error('produk') bad @enderror">{{ old('produk') }}</textarea>
                 @error('produk')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 f">
                 <label for="r-cerita_usaha">Ceritakan tentang usaha</label>
-                <textarea id="r-cerita_usaha" name="cerita_usaha" rows="3" placeholder="Sejarah singkat, keunikan produk, dan nilai yang ingin kamu bawa.">{{ old('cerita_usaha') }}</textarea>
+                <textarea id="r-cerita_usaha" name="cerita_usaha" rows="3" placeholder="Sejarah singkat, keunikan bahan/desain, dan nilai kearifan lokal yang dibawa.">{{ old('cerita_usaha') }}</textarea>
                 @error('cerita_usaha')<small class="err">{{ $message }}</small>@enderror
               </div>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend><span>3</span> Foto & dokumen</legend>
-            <p class="hint">Format JPG/PNG (KTP & NIB boleh PDF). KTP & NIB hanya dilihat admin dan tidak tampil di website. Foto produk tampil di kartu UMKM.</p>
+            <legend><span>3</span> Foto &amp; dokumen</legend>
+            <p class="hint">Format JPG/PNG (KTP &amp; NIB boleh PDF). KTP &amp; NIB hanya untuk verifikasi internal kurator dan tidak dipublikasikan ke publik. Foto produk tampil pada kartu direktori.</p>
             <div class="row g-2 g-md-3">
               <div class="col-12 col-md-6 f">
                 <label for="r-foto_ktp">Foto KTP <i>*</i></label>
@@ -136,37 +252,12 @@
           </fieldset>
 
           <fieldset>
-            <legend><span>5</span> Kesiapan stand & komitmen</legend>
+            <legend><span>5</span> Kesiapan stand &amp; komitmen</legend>
             <div class="opt-list">
               @foreach(config('ekraf.kesiapan') as $i => $k)
                 <label class="opt"><input type="checkbox" name="kesiapan[]" value="{{ $k }}" @checked(in_array($k, $pilihSiap))> <span>{{ $k }}</span></label>
               @endforeach
             </div>
-          </fieldset>
-
-          <fieldset>
-            <legend><span>6</span> {{ $adaAkun ? 'Akun' : 'Buat akun untuk masuk nanti' }}</legend>
-            @if($adaAkun)
-              <p class="hint">Kamu masuk sebagai <b>{{ auth()->user()->name }}</b>. Data ini akan tersimpan di akunmu.</p>
-            @else
-              <p class="hint">Email & password ini dipakai untuk masuk dan melihat datamu. Kamu hanya bisa melihat data yang kamu isi sendiri.</p>
-              <div class="row g-2 g-md-3">
-                <div class="col-12 f">
-                  <label for="r-email">Email <i>*</i></label>
-                  <input id="r-email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" class="@error('email') bad @enderror">
-                  @error('email')<small class="err">{{ $message }}</small>@enderror
-                </div>
-                <div class="col-12 col-md-6 f">
-                  <label for="r-password">Password <i>*</i> <em>(min. 8 karakter)</em></label>
-                  <input id="r-password" type="password" name="password" required minlength="8" autocomplete="new-password" class="@error('password') bad @enderror">
-                  @error('password')<small class="err">{{ $message }}</small>@enderror
-                </div>
-                <div class="col-12 col-md-6 f">
-                  <label for="r-password_confirmation">Ulangi password <i>*</i></label>
-                  <input id="r-password_confirmation" type="password" name="password_confirmation" required minlength="8" autocomplete="new-password">
-                </div>
-              </div>
-            @endif
           </fieldset>
 
           <div class="consent">
@@ -178,11 +269,11 @@
           </div>
 
           <div class="reg-actions">
-            <button type="submit" class="btn btn-forest" data-submit><i class="bi bi-send"></i>&nbsp; Kirim pendaftaran</button>
-            @guest<span>Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></span>@endguest
+            <button type="submit" class="btn btn-forest" data-submit><i class="bi bi-send-fill"></i>&nbsp; Kirim pendaftaran UMKM</button>
+            <a href="{{ route('dashboard') }}" class="btn btn-ghost"><i class="bi bi-speedometer2"></i>&nbsp; Panel Dashboard</a>
           </div>
         </form>
-      @endif
+      </div>
     </div>
   </div>
-</div>
+@endguest
