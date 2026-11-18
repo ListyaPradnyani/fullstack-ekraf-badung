@@ -181,7 +181,8 @@
   }
 
   function renderCal() {
-    $("#cal-title").textContent = `${MONTHS[view.m]} ${view.y}`;
+    const titleText = $("#cal-title .cal-title-text") || $("#cal-title");
+    titleText.textContent = `${MONTHS[view.m]} ${view.y}`;
     const first = new Date(view.y, view.m, 1);
     const lead = (first.getDay() + 6) % 7; // Senin = 0
     const days = new Date(view.y, view.m + 1, 0).getDate();
@@ -216,13 +217,98 @@
       : `<p class="empty">Belum ada kegiatan di sini. Santai dulu~</p>`;
   }
 
+  /* ===== Shortcut Pemilih Bulan & Tahun (Popover) ===== */
+  const calTitleBtn = $("#cal-title");
+  const calPicker = $("#cal-picker");
+  let pickerYear = view.y;
+
+  function renderPicker() {
+    if (!calPicker) return;
+    const yearEl = $("#cal-picker-year");
+    if (yearEl) yearEl.textContent = pickerYear;
+
+    const monthsBox = $("#cal-picker-months");
+    if (monthsBox) {
+      monthsBox.innerHTML = MONTHS.map((name, m) => {
+        const isSel = (view.m === m && view.y === pickerYear);
+        const isNow = (now.getMonth() === m && now.getFullYear() === pickerYear);
+        const cls = ["cal-month-btn"];
+        if (isSel) cls.push("active");
+        if (isNow) cls.push("is-today");
+        return `<button type="button" class="${cls.join(" ")}" data-m="${m}" aria-pressed="${isSel}" title="${esc(name)}">${esc(MONTHS_SHORT[m])}</button>`;
+      }).join("");
+    }
+  }
+
+  function openPicker() {
+    if (!calPicker) return;
+    pickerYear = view.y;
+    renderPicker();
+    calPicker.hidden = false;
+    calTitleBtn.setAttribute("aria-expanded", "true");
+  }
+
+  function closePicker() {
+    if (!calPicker || calPicker.hidden) return;
+    calPicker.hidden = true;
+    calTitleBtn.setAttribute("aria-expanded", "false");
+  }
+
+  if (calTitleBtn && calPicker) {
+    calTitleBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (calPicker.hidden) openPicker();
+      else closePicker();
+    });
+
+    $("#cal-picker-prev-year")?.addEventListener("click", e => {
+      e.stopPropagation();
+      pickerYear--;
+      renderPicker();
+    });
+
+    $("#cal-picker-next-year")?.addEventListener("click", e => {
+      e.stopPropagation();
+      pickerYear++;
+      renderPicker();
+    });
+
+    $("#cal-picker-today")?.addEventListener("click", e => {
+      e.stopPropagation();
+      view.y = now.getFullYear();
+      view.m = now.getMonth();
+      selected = null;
+      renderCal();
+      closePicker();
+    });
+
+    $("#cal-picker-months")?.addEventListener("click", e => {
+      const b = e.target.closest(".cal-month-btn");
+      if (!b) return;
+      e.stopPropagation();
+      view.y = pickerYear;
+      view.m = +b.dataset.m;
+      selected = null;
+      renderCal();
+      closePicker();
+    });
+
+    calPicker.addEventListener("click", e => e.stopPropagation());
+    document.addEventListener("click", e => {
+      if (!e.target.closest(".cal-title-wrap")) closePicker();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closePicker();
+    });
+  }
+
   $("#cal-grid").addEventListener("click", e => {
     const b = e.target.closest(".cal-day[data-k]");
     if (!b) return;
     selected = selected === b.dataset.k ? null : b.dataset.k;
     renderCal();
   });
-  const shift = n => { view.m += n; if (view.m < 0) { view.m = 11; view.y--; } if (view.m > 11) { view.m = 0; view.y++; } selected = null; renderCal(); };
+  const shift = n => { view.m += n; if (view.m < 0) { view.m = 11; view.y--; } if (view.m > 11) { view.m = 0; view.y++; } selected = null; closePicker(); renderCal(); };
   $("#cal-prev").addEventListener("click", () => shift(-1));
   $("#cal-next").addEventListener("click", () => shift(1));
   renderCal();
