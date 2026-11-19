@@ -6,6 +6,7 @@ use App\Models\Umkm;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
@@ -71,20 +72,39 @@ class AdminController extends Controller
 
     public function export(Request $request)
     {
-        $kolom = ['nama_brand', 'nama_pelaku', 'kategori', 'kecamatan', 'no_wa', 'alamat', 'media_sosial', 'produk', 'cerita_usaha', 'status', 'submitted_at'];
+        // Ambil struktur dan urutan kolom resmi langsung dari tabel 'umkms' di database
+        $kolom = Schema::getColumnListing('umkms');
 
         return response()->streamDownload(function () use ($request, $kolom) {
             $out = fopen('php://output', 'w');
-            fwrite($out, "\xEF\xBB\xBF"); // BOM agar terbaca benar di Excel
-            fputcsv($out, array_merge($kolom, ['legalitas', 'kesiapan']));
+            fwrite($out, "\xEF\xBB\xBF"); // BOM agar UTF-8 terbaca dengan benar di Excel
+
+            // Header baris pertama otomatis persis sesuai nama kolom database
+            fputcsv($out, $kolom);
+
             $this->filtered($request)->chunk(200, function ($rows) use ($out, $kolom) {
                 foreach ($rows as $u) {
-                    $baris = array_map(fn ($k) => $u->{$k}, $kolom);
-                    fputcsv($out, array_merge($baris, [implode('; ', $u->legalitas ?? []), implode('; ', $u->kesiapan ?? [])]));
+                    $baris = [];
+                    foreach ($kolom as $k) {
+                        $val = $u->{$k};
+
+                        if (is_array($val)) {
+                            // Format JSON agar struktur data legalitas & kesiapan tetap valid dan mudah diimpor kembali
+                            $baris[] = json_encode($val, JSON_UNESCAPED_UNICODE);
+                        } elseif (is_bool($val)) {
+                            // Format boolean konsisten 1 atau 0 sesuai tipe tinyint database
+                            $baris[] = $val ? 1 : 0;
+                        } elseif ($val instanceof \DateTimeInterface) {
+                            $baris[] = $val->format('Y-m-d H:i:s');
+                        } else {
+                            $baris[] = $val ?? '';
+                        }
+                    }
+                    fputcsv($out, $baris);
                 }
             });
             fclose($out);
-        }, 'umkm-ekraf-badung-'.now()->format('Ymd').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+        }, 'umkm-ekraf-badung-'.now()->format('Ymd-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     public function users()
