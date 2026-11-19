@@ -127,20 +127,67 @@
         @endforeach
 
         <div class="col-12">
-          <label for="foto_produk" class="form-label {{ $wajib ? 'req' : '' }}">Foto produk <small class="text-muted fw-normal">(1–5 foto, produk & kemasan)</small></label>
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+            <label for="foto_produk" class="form-label mb-0 {{ $wajib ? 'req' : '' }}">
+              Foto produk <small class="text-muted fw-normal">(1–5 foto, produk &amp; kemasan)</small>
+            </label>
+            <div id="foto_overview_badge" class="badge text-bg-light border px-3 py-2 fs-6">
+              <i class="bi bi-images text-primary me-1"></i>
+              <span id="foto_overview_text">0 / 5 foto</span>
+            </div>
+          </div>
+
+          {{-- Foto lama yang tersimpan di sistem --}}
           @if($produk->isNotEmpty())
-            <div class="d-flex flex-wrap gap-3 mb-2">
-              @foreach($produk as $f)
-                <div class="thumb-box">
-                  @if($f->imageUrl())<a href="{{ $f->openUrl() }}" target="_blank" rel="noopener"><img src="{{ $f->imageUrl() }}" class="thumb" alt="Foto produk" loading="lazy" onerror="this.style.visibility='hidden'"></a>
-                  @else<a href="{{ $f->openUrl() }}" target="_blank" rel="noopener" class="thumb d-flex align-items-center justify-content-center"><i class="bi bi-box-arrow-up-right"></i></a>@endif
-                  <label class="text-danger"><input type="checkbox" name="hapus_file[]" value="{{ $f->id }}" class="form-check-input"> hapus</label>
-                </div>
-              @endforeach
+            <div class="mb-3 p-3 bg-light rounded border" id="existing_photos_wrap">
+              <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
+                <span class="small fw-bold text-secondary">
+                  <i class="bi bi-check-circle-fill text-success"></i> Foto tersimpan saat ini ({{ $produk->count() }} foto):
+                </span>
+                <span class="small text-muted">Centang <b>hapus</b> jika ingin menghapus foto lama</span>
+              </div>
+              <div class="d-flex flex-wrap gap-3">
+                @foreach($produk as $f)
+                  <div class="thumb-box p-2 bg-white rounded border existing-photo-card" id="existing-file-{{ $f->id }}" style="transition: all .2s;">
+                    @if($f->imageUrl())
+                      <a href="{{ $f->openUrl() }}" target="_blank" rel="noopener" title="Klik untuk melihat foto ukuran penuh">
+                        <img src="{{ $f->imageUrl() }}" class="thumb rounded" alt="Foto produk" loading="lazy" onerror="this.style.visibility='hidden'">
+                      </a>
+                    @else
+                      <a href="{{ $f->openUrl() }}" target="_blank" rel="noopener" class="thumb rounded d-flex align-items-center justify-content-center text-decoration-none" title="Buka berkas">
+                        <i class="bi bi-box-arrow-up-right fs-4"></i>
+                      </a>
+                    @endif
+                    <label class="text-danger small mt-1 mb-0 cursor-pointer d-flex align-items-center gap-1">
+                      <input type="checkbox" name="hapus_file[]" value="{{ $f->id }}" class="form-check-input hapus-file-cb" id="cb-hapus-{{ $f->id }}">
+                      <span>hapus</span>
+                    </label>
+                  </div>
+                @endforeach
+              </div>
             </div>
           @endif
-          <input id="foto_produk" type="file" name="foto_produk[]" multiple accept=".jpg,.jpeg,.png,.webp" class="form-control @error('foto_produk') is-invalid @enderror @error('foto_produk.*') is-invalid @enderror">
-          @error('foto_produk')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+          {{-- Pratinjau foto baru yang dipilih (mendukung unggah berulang) --}}
+          <div id="new_photos_wrap" class="mb-3 p-3 bg-light rounded border d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
+              <span class="small fw-bold text-primary">
+                <i class="bi bi-plus-circle-fill"></i> Foto baru yang ditambahkan (<span id="new_photos_count">0</span> foto):
+              </span>
+              <span class="small text-muted">Klik tombol <b>Hapus</b> pada kartu foto untuk membatalkan</span>
+            </div>
+            <div id="new_photos_list" class="d-flex flex-wrap gap-3"></div>
+          </div>
+
+          <div class="input-group">
+            <input id="foto_produk" type="file" name="foto_produk[]" multiple accept=".jpg,.jpeg,.png,.webp" class="form-control @error('foto_produk') is-invalid @enderror @error('foto_produk.*') is-invalid @enderror">
+            <button class="btn btn-outline-secondary d-none" type="button" id="btn_clear_new_photos" title="Bersihkan semua foto baru yang dipilih"><i class="bi bi-x-circle"></i> Reset Pilihan</button>
+          </div>
+          <div class="form-text mt-1 text-muted">
+            <i class="bi bi-info-circle"></i> Format JPG, PNG, WEBP (maks. 3MB per foto). Kamu bisa memilih foto berkali-kali untuk menambahkannya ke daftar hingga total maksimal 5 foto.
+          </div>
+          <div id="foto_produk_js_error" class="text-danger small fw-semibold mt-1 d-none"></div>
+          @error('foto_produk')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
           @foreach($errors->get('foto_produk.*') as $msgs)@foreach($msgs as $m)<div class="invalid-feedback d-block">{{ $m }}</div>@endforeach @endforeach
         </div>
       </div>
@@ -225,3 +272,233 @@
   </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function() {
+  const input = document.getElementById('foto_produk');
+  if (!input) return;
+
+  const overviewBadge = document.getElementById('foto_overview_badge');
+  const overviewText = document.getElementById('foto_overview_text');
+  const newWrap = document.getElementById('new_photos_wrap');
+  const newList = document.getElementById('new_photos_list');
+  const newCountEl = document.getElementById('new_photos_count');
+  const clearBtn = document.getElementById('btn_clear_new_photos');
+  const errEl = document.getElementById('foto_produk_js_error');
+  const hapusCheckboxes = document.querySelectorAll('.hapus-file-cb');
+
+  const MAX_FILES = 5;
+  const MAX_BYTES = 3 * 1024 * 1024; // 3MB
+
+  let accumulatedNewFiles = [];
+  let previewUrls = [];
+
+  function getActiveExistingCount() {
+    let count = 0;
+    hapusCheckboxes.forEach(cb => {
+      const card = document.getElementById(`existing-file-${cb.value}`);
+      if (cb.checked) {
+        if (card) {
+          card.style.opacity = '0.4';
+          card.style.filter = 'grayscale(100%)';
+        }
+      } else {
+        count++;
+        if (card) {
+          card.style.opacity = '1';
+          card.style.filter = 'none';
+        }
+      }
+    });
+    return count;
+  }
+
+  function updateOverview() {
+    const activeExisting = getActiveExistingCount();
+    const newCount = accumulatedNewFiles.length;
+    const total = activeExisting + newCount;
+
+    if (overviewText) {
+      if (activeExisting > 0 && newCount > 0) {
+        overviewText.textContent = `${total} / ${MAX_FILES} foto (${activeExisting} tersimpan, ${newCount} baru)`;
+      } else if (activeExisting > 0) {
+        overviewText.textContent = `${total} / ${MAX_FILES} foto (${activeExisting} tersimpan)`;
+      } else {
+        overviewText.textContent = `${total} / ${MAX_FILES} foto dipilih`;
+      }
+    }
+
+    if (overviewBadge) {
+      overviewBadge.classList.remove('text-bg-light', 'text-bg-primary', 'text-bg-warning', 'text-bg-danger', 'text-white', 'text-dark');
+      if (total === 0) {
+        overviewBadge.classList.add('text-bg-light', 'text-dark');
+      } else if (total < MAX_FILES) {
+        overviewBadge.classList.add('text-bg-primary', 'text-white');
+      } else if (total === MAX_FILES) {
+        overviewBadge.classList.add('text-bg-warning', 'text-dark');
+      } else {
+        overviewBadge.classList.add('text-bg-danger', 'text-white');
+      }
+    }
+
+    if (newCountEl) {
+      newCountEl.textContent = newCount;
+    }
+
+    if (clearBtn) {
+      clearBtn.classList.toggle('d-none', newCount === 0);
+    }
+  }
+
+  function renderNewPreviews() {
+    previewUrls.forEach(u => URL.revokeObjectURL(u));
+    previewUrls = [];
+    if (!newList || !newWrap) return;
+
+    newList.innerHTML = '';
+    if (accumulatedNewFiles.length === 0) {
+      newWrap.classList.add('d-none');
+      return;
+    }
+
+    newWrap.classList.remove('d-none');
+
+    accumulatedNewFiles.forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      previewUrls.push(url);
+
+      const card = document.createElement('div');
+      card.className = 'thumb-box p-2 bg-white rounded border text-center position-relative';
+      card.style.width = '108px';
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'thumb rounded';
+      img.style.width = '90px';
+      img.style.height = '90px';
+      img.style.objectFit = 'cover';
+      img.alt = file.name;
+
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-dark position-absolute';
+      badge.style.top = '6px';
+      badge.style.left = '6px';
+      badge.style.fontSize = '0.65rem';
+      badge.textContent = `#${idx + 1}`;
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'small text-truncate mt-1 text-muted';
+      nameEl.style.maxWidth = '90px';
+      nameEl.title = file.name;
+      nameEl.textContent = file.name;
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn btn-sm btn-outline-danger py-0 px-2 mt-1';
+      delBtn.style.fontSize = '0.75rem';
+      delBtn.innerHTML = '<i class="bi bi-trash"></i> Hapus';
+      delBtn.title = `Batal mengunggah ${file.name}`;
+
+      delBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        accumulatedNewFiles.splice(idx, 1);
+        syncInputFiles();
+        renderNewPreviews();
+        updateOverview();
+        showError('');
+      });
+
+      card.appendChild(img);
+      card.appendChild(badge);
+      card.appendChild(nameEl);
+      card.appendChild(delBtn);
+      newList.appendChild(card);
+    });
+  }
+
+  function syncInputFiles() {
+    try {
+      const dt = new DataTransfer();
+      accumulatedNewFiles.forEach(f => dt.items.add(f));
+      input.files = dt.files;
+    } catch (e) {}
+
+    if (accumulatedNewFiles.length === 0) {
+      input.value = '';
+    }
+  }
+
+  function showError(msg) {
+    if (!errEl) return;
+    if (msg) {
+      errEl.textContent = msg;
+      errEl.classList.remove('d-none');
+    } else {
+      errEl.textContent = '';
+      errEl.classList.add('d-none');
+    }
+  }
+
+  input.addEventListener('change', function() {
+    const newlySelected = Array.from(input.files || []);
+    if (newlySelected.length === 0) return;
+
+    let errorMsg = '';
+    const activeExisting = getActiveExistingCount();
+    let hitLimit = false;
+
+    for (const f of newlySelected) {
+      if (f.size > MAX_BYTES) {
+        errorMsg = `Foto "${f.name}" melebihi ukuran maksimal 3MB.`;
+        continue;
+      }
+
+      // Hindari duplikasi file yang sama persis
+      const exists = accumulatedNewFiles.some(
+        ex => ex.name === f.name && ex.size === f.size && ex.lastModified === f.lastModified
+      );
+      if (exists) continue;
+
+      if (activeExisting + accumulatedNewFiles.length >= MAX_FILES) {
+        hitLimit = true;
+        break;
+      }
+
+      accumulatedNewFiles.push(f);
+    }
+
+    syncInputFiles();
+    renderNewPreviews();
+    updateOverview();
+
+    if (hitLimit) {
+      showError(`Total foto produk maksimal ${MAX_FILES} foto. Foto yang melebihi batas kuota tidak ditambahkan.`);
+    } else if (errorMsg) {
+      showError(errorMsg);
+    } else {
+      showError('');
+    }
+  });
+
+  hapusCheckboxes.forEach(cb => {
+    cb.addEventListener('change', function() {
+      updateOverview();
+    });
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      accumulatedNewFiles = [];
+      syncInputFiles();
+      renderNewPreviews();
+      updateOverview();
+      showError('');
+    });
+  }
+
+  // Hitung awal saat halaman dimuat
+  updateOverview();
+})();
+</script>
+@endpush

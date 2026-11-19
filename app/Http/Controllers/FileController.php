@@ -12,7 +12,11 @@ class FileController extends Controller
     public function show(Request $request, UmkmFile $file)
     {
         $user = $request->user();
-        abort_unless($user->isAdmin() || $file->umkm->user_id === $user->id, 403);
+
+        // Foto produk bersifat publik; berkas privat (KTP, NIB, legalitas) hanya untuk admin & pemilik
+        if ($file->jenis !== 'produk') {
+            abort_unless($user && ($user->isAdmin() || ($file->umkm && $file->umkm->user_id === $user->id)), 403);
+        }
 
         if (! $file->path) {
             return $file->url ? redirect()->away($file->url) : abort(404);

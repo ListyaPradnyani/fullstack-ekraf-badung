@@ -15,21 +15,134 @@
 
   form.querySelectorAll('input[type="file"]').forEach(inp => {
     const box = inp.dataset.previews ? form.querySelector(`[data-previews="${inp.id}"]`) : null;
+    const overview = document.getElementById(`${inp.id}-overview`);
     let urls = [];
-    inp.addEventListener("change", () => {
-      urls.forEach(URL.revokeObjectURL); urls = [];
-      if (box) box.innerHTML = "";
-      const files = [...inp.files], max = +inp.dataset.max || 1;
-      let msg = "";
-      if (files.length > max) msg = `Maksimal ${max} berkas.`;
-      else if (files.some(f => f.size > MAX_MB * 1024 * 1024)) msg = `Ukuran tiap berkas maksimal ${MAX_MB} MB.`;
-      if (msg) { inp.value = ""; showErr(inp, msg); return; }
-      showErr(inp, "");
-      if (box) files.forEach(f => {
-        const u = URL.createObjectURL(f); urls.push(u);
-        const im = new Image(); im.src = u; im.alt = f.name; box.appendChild(im);
+    let accumulatedFiles = [];
+
+    const updateOverview = () => {
+      if (!overview) return;
+      const countEl = overview.querySelector(".count-num");
+      const max = +inp.dataset.max || 5;
+      const count = accumulatedFiles.length;
+      if (countEl) countEl.textContent = count;
+      overview.classList.toggle("has-files", count > 0);
+      overview.classList.toggle("full", count >= max);
+    };
+
+    const renderPreviews = () => {
+      urls.forEach(URL.revokeObjectURL);
+      urls = [];
+      if (!box) return;
+      box.innerHTML = "";
+
+      accumulatedFiles.forEach((file, idx) => {
+        const u = URL.createObjectURL(file);
+        urls.push(u);
+
+        const item = document.createElement("div");
+        item.className = "preview-item";
+
+        const im = new Image();
+        im.src = u;
+        im.alt = file.name;
+        item.appendChild(im);
+
+        const badge = document.createElement("span");
+        badge.className = "preview-badge";
+        badge.textContent = `#${idx + 1}`;
+        item.appendChild(badge);
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "preview-remove";
+        delBtn.innerHTML = "&times;";
+        delBtn.title = `Hapus ${file.name}`;
+        delBtn.setAttribute("aria-label", `Hapus ${file.name}`);
+
+        delBtn.addEventListener("click", e => {
+          e.preventDefault();
+          e.stopPropagation();
+          accumulatedFiles.splice(idx, 1);
+          syncFilesToInput();
+          renderPreviews();
+          updateOverview();
+        });
+
+        item.appendChild(delBtn);
+        box.appendChild(item);
       });
-    });
+    };
+
+    const syncFilesToInput = () => {
+      try {
+        const dt = new DataTransfer();
+        accumulatedFiles.forEach(f => dt.items.add(f));
+        inp.files = dt.files;
+      } catch (err) {
+        // Fallback for older browser engines
+      }
+      if (accumulatedFiles.length === 0) {
+        inp.value = "";
+      }
+    };
+
+    if (inp.multiple) {
+      inp.addEventListener("change", () => {
+        const newlySelected = [...inp.files];
+        const max = +inp.dataset.max || 5;
+        let errMsg = "";
+
+        if (newlySelected.some(f => f.size > MAX_MB * 1024 * 1024)) {
+          errMsg = `Ukuran tiap berkas maksimal ${MAX_MB} MB.`;
+        }
+
+        if (errMsg) {
+          syncFilesToInput();
+          showErr(inp, errMsg);
+          return;
+        }
+
+        let hitLimit = false;
+
+        newlySelected.forEach(f => {
+          const exists = accumulatedFiles.some(
+            existing => existing.name === f.name && existing.size === f.size && existing.lastModified === f.lastModified
+          );
+          if (exists) {
+            return;
+          }
+          if (accumulatedFiles.length >= max) {
+            hitLimit = true;
+            return;
+          }
+          accumulatedFiles.push(f);
+        });
+
+        syncFilesToInput();
+        renderPreviews();
+        updateOverview();
+
+        if (hitLimit) {
+          showErr(inp, `Maksimal ${max} foto produk. Hanya foto dalam batas kuota yang disimpan.`);
+        } else {
+          showErr(inp, "");
+        }
+      });
+    } else {
+      inp.addEventListener("change", () => {
+        urls.forEach(URL.revokeObjectURL); urls = [];
+        if (box) box.innerHTML = "";
+        const files = [...inp.files];
+        let msg = "";
+        if (files.some(f => f.size > MAX_MB * 1024 * 1024)) msg = `Ukuran tiap berkas maksimal ${MAX_MB} MB.`;
+        if (msg) { inp.value = ""; showErr(inp, msg); return; }
+        showErr(inp, "");
+        if (box) files.forEach(f => {
+          const u = URL.createObjectURL(f); urls.push(u);
+          const im = new Image(); im.src = u; im.alt = f.name; box.appendChild(im);
+        });
+      });
+    }
   });
 
   form.addEventListener("submit", e => {

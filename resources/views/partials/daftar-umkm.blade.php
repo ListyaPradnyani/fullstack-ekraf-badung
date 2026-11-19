@@ -226,8 +226,16 @@
                 @error('foto_nib')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 f">
-                <label for="r-foto_produk">Foto produk <i>*</i> <em>(1–5 foto)</em></label>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">
+                  <label for="r-foto_produk" class="mb-0">Foto produk <i>*</i> <em>(1–5 foto, produk &amp; kemasan)</em></label>
+                  <span class="foto-overview-pill" id="r-foto_produk-overview" aria-live="polite">
+                    <i class="bi bi-images"></i> <b><span class="count-num">0</span> / 5</b> foto dipilih
+                  </span>
+                </div>
                 <input class="file @error('foto_produk') bad @enderror" id="r-foto_produk" type="file" name="foto_produk[]" accept=".jpg,.jpeg,.png,.webp" multiple required data-max="5">
+                <div class="small text-muted mt-1">
+                  <i class="bi bi-info-circle"></i> Kamu bisa memilih foto berkali-kali untuk menambahkan hingga maksimal 5 foto.
+                </div>
                 <div class="previews" data-previews="r-foto_produk" aria-live="polite"></div>
                 @error('foto_produk')<small class="err">{{ $message }}</small>@enderror
                 @foreach($errors->get('foto_produk.*') as $msgs)@foreach($msgs as $m)<small class="err">{{ $m }}</small>@endforeach @endforeach
