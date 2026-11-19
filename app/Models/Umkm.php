@@ -126,12 +126,12 @@ class Umkm extends Model
                     break;
                 }
             }
-            $cat = $isFashion ? 'Fesyen' : 'Kriya';
+            $cat = $isFashion ? 'Fashion' : 'Kriya';
         }
 
         // 2. Standarisasi penulisan kategori
-        if (strcasecmp($cat, 'Fesyen') === 0 || strcasecmp($cat, 'Fashion') === 0) {
-            $cat = 'Fesyen'; // Kita seragamkan pakai 'Fesyen' atau 'Fashion' sesuai script JS-mu
+        if (strcasecmp($cat, 'Fashion') === 0 || strcasecmp($cat, 'Fesyen') === 0) {
+            $cat = 'Fashion'; // Diseragamkan menjadi 'Fashion'
         } else {
             $cat = 'Kriya';
         }

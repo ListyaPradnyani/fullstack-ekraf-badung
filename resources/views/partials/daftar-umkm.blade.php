@@ -14,9 +14,9 @@
       <div class="col-12 col-lg-7">
         <div class="reg-preview-card">
           <div class="reg-preview-head">
-            <span class="tag">Overview Pendaftaran</span>
-            <h3>Tahapan Registrasi UMKM Ekraf</h3>
-            <p>Siapkan informasi dan berkas usahamu untuk bergabung dalam ekosistem ekonomi kreatif Kabupaten Badung.</p>
+            <span class="tag">Informasi Pendaftaran</span>
+            <h3>Tahapan Registrasi Pelaku Usaha Ekraf</h3>
+            <p>Persiapkan informasi dan dokumen kelengkapan usaha Anda untuk bergabung dalam ekosistem ekonomi kreatif binaan Pemerintah Kabupaten Badung.</p>
           </div>
 
           <div class="reg-preview-steps">
@@ -24,7 +24,7 @@
               <span class="pstep-num">1</span>
               <div class="pstep-body">
                 <h4>Data &amp; Identitas Usaha</h4>
-                <p>Nama pelaku, nama brand, kecamatan di Badung, subsektor ekraf, kontak WhatsApp, dan alamat usaha.</p>
+                <p>Nama pelaku, nama brand, kecamatan di Badung, subsektor ekraf, kontak WhatsApp, dan alamat operasional usaha.</p>
               </div>
             </div>
 
@@ -32,15 +32,15 @@
               <span class="pstep-num">2</span>
               <div class="pstep-body">
                 <h4>Karya &amp; Produk Unggulan</h4>
-                <p>Rincian produk kreatif yang diajukan serta cerita singkat perjalanan &amp; keunikan produkmu.</p>
+                <p>Rincian produk kreatif yang diajukan serta deskripsi profil keunggulan dan keunikan produk Anda.</p>
               </div>
             </div>
 
             <div class="reg-pstep">
               <span class="pstep-num">3</span>
               <div class="pstep-body">
-                <h4>Foto &amp; Dokumen Kurasi</h4>
-                <p>Foto KTP &amp; NIB (khusus verifikasi internal kurator) serta 1–5 foto produk kreatif beresolusi baik.</p>
+                <h4>Foto &amp; Dokumen Verifikasi</h4>
+                <p>Foto KTP &amp; NIB (khusus verifikasi administratif internal kurator) serta 1–5 foto dokumentasi produk beresolusi baik.</p>
               </div>
             </div>
 
@@ -48,14 +48,14 @@
               <span class="pstep-num">4</span>
               <div class="pstep-body">
                 <h4>Legalitas &amp; Komitmen Program</h4>
-                <p>Legalitas tambahan yang dimiliki (HKI, Halal, dll) serta kesiapan keikutsertaan event Go Ekraf.</p>
+                <p>Kelengkapan legalitas pendukung yang dimiliki (HKI, Halal, dll) serta kesiapan keikutsertaan dalam kegiatan kurasi daerah.</p>
               </div>
             </div>
           </div>
 
           <div class="reg-preview-foot">
             <i class="bi bi-shield-check"></i>
-            <span>Data diverifikasi secara aman oleh tim kurator Komite Ekraf Badung.</span>
+            <span>Data diverifikasi secara aman oleh tim kurator Komite Ekonomi Kreatif Kabupaten Badung.</span>
           </div>
         </div>
       </div>
@@ -64,33 +64,33 @@
       <div class="col-12 col-lg-5">
         <div class="reg-cta-card">
           <div class="reg-cta-badge">
-            <i class="bi bi-stars"></i>
+            <i class="bi bi-patch-check-fill"></i>
             <span>Akses Direktori Resmi</span>
           </div>
 
-          <h3 class="reg-cta-title">Kembangkan Usaha Kreatifmu Bersama Kami</h3>
-          <p class="reg-cta-desc">Daftarkan produk dan brand lokalmu agar terhubung dengan jejaring ekonomi kreatif, kurasi event kabupaten, dan publikasi luas.</p>
+          <h3 class="reg-cta-title">Kembangkan Potensi Usaha Kreatif Anda Bersama Kami</h3>
+          <p class="reg-cta-desc">Daftarkan produk dan merek lokal Anda agar terhubung dengan jejaring ekonomi kreatif, fasilitasi promosi daerah, dan seleksi kurasi event kedinasan.</p>
 
           <ul class="reg-cta-benefits">
             <li>
               <i class="bi bi-check-circle-fill"></i>
               <div>
-                <b>Publikasi Profil Terkurasi</b>
-                <span>Tampil di direktori website resmi Ekraf Badung untuk publik &amp; wisatawan.</span>
+                <b>Publikasi Direktori Resmi</b>
+                <span>Profil usaha ditampilkan pada portal resmi Ekraf Badung untuk menjangkau publik dan mitra industri.</span>
               </div>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
               <div>
-                <b>Prioritas Kurasi Event</b>
-                <span>Kesempatan ikut serta dalam pameran, festival, dan program Go Ekraf Badung.</span>
+                <b>Prioritas Kurasi Kegiatan</b>
+                <span>Peluang diikutsertakan dalam pameran, festival, dan program pembinaan Go Ekraf Kabupaten Badung.</span>
               </div>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
               <div>
-                <b>Kelola Mandiri Portofolio</b>
-                <span>Perbarui deskripsi produk dan jam operasional kapan saja lewat akunmu.</span>
+                <b>Pengelolaan Portofolio Mandiri</b>
+                <span>Kemudahan memperbarui informasi katalog produk, kontak, dan jam operasional melalui akun pengguna.</span>
               </div>
             </li>
           </ul>
@@ -98,14 +98,14 @@
           <div class="reg-cta-actionbox">
             <div class="reg-cta-note">
               <i class="bi bi-info-circle"></i>
-              <span>Untuk menjaga validitas data, pendaftaran dilakukan melalui akun terdaftar.</span>
+              <span>Untuk menjaga keabsahan dan akurasi data, pendaftaran dilakukan melalui akun terdaftar.</span>
             </div>
             <div class="reg-cta-buttons">
               <a href="{{ route('login') }}" class="btn btn-forest w-100">
-                <i class="bi bi-box-arrow-in-right"></i>&nbsp; Masuk untuk Mendaftar
+                <i class="bi bi-box-arrow-in-right"></i>&nbsp; Masuk ke Akun
               </a>
               <a href="{{ route('register') }}" class="btn btn-ghost w-100">
-                <i class="bi bi-person-plus"></i>&nbsp; Belum punya akun? Daftar
+                <i class="bi bi-person-plus"></i>&nbsp; Registrasi Akun Baru
               </a>
             </div>
           </div>
@@ -126,17 +126,17 @@
               <span>Masuk sebagai: <b>{{ auth()->user()->name }}</b></span>
             </div>
           </div>
-          <h3>Daftarkan UMKM-mu</h3>
-          <p>Lengkapi formulir di bawah ini. Data UMKM akan otomatis terhubung dengan akunmu dan ditinjau oleh tim kurator sebelum tayang di direktori publik.</p>
+          <h3>Formulir Pendaftaran Pelaku Usaha UMKM</h3>
+          <p>Lengkapi formulir pendaftaran di bawah ini. Data usaha Anda akan terhubung dengan akun terdaftar dan melalui proses kurasi sebelum dipublikasikan pada direktori resmi.</p>
         </div>
 
         @if($adalahAdmin)
-          <div class="reg-note">Kamu masuk sebagai admin. Kamu dapat mengisi form ini atau mengelola data UMKM dari <a href="{{ route('admin.umkm.index') }}"><b>panel admin</b></a>.</div>
+          <div class="reg-note">Anda masuk dengan hak akses Administrator. Anda dapat mengisi formulir ini atau mengelola data direktori melalui <a href="{{ route('admin.umkm.index') }}"><b>panel admin</b></a>.</div>
         @endif
 
         @if($errors->any())
           <div class="reg-alert" role="alert" tabindex="-1">
-            <b>Ada isian yang perlu diperbaiki:</b>
+            <b>Terdapat isian yang perlu diperbaiki:</b>
             <ul>@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
           </div>
         @endif
@@ -145,7 +145,7 @@
           @csrf
 
           <fieldset>
-            <legend><span>1</span> Data usaha</legend>
+            <legend><span>1</span> Data Identitas Usaha</legend>
             <div class="row g-2 g-md-3">
               <div class="col-12 col-md-6 f">
                 <label for="r-nama_pelaku">Nama pelaku usaha <i>*</i></label>
@@ -174,12 +174,12 @@
                 @error('kategori')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 col-md-6 f">
-                <label for="r-no_wa">No. WA <i>*</i></label>
+                <label for="r-no_wa">No. WhatsApp <i>*</i></label>
                 <input id="r-no_wa" name="no_wa" type="tel" inputmode="tel" placeholder="08xxxxxxxxxx" value="{{ old('no_wa') }}" required autocomplete="tel" class="@error('no_wa') bad @enderror">
                 @error('no_wa')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 col-md-6 f">
-                <label for="r-jam_buka">Jam buka <em>(opsional)</em></label>
+                <label for="r-jam_buka">Jam operasional <em>(opsional)</em></label>
                 <input id="r-jam_buka" name="jam_buka" placeholder="Senin – Sabtu, 09.00 – 17.00 WITA" value="{{ old('jam_buka') }}">
               </div>
               <div class="col-12 f">
@@ -188,7 +188,7 @@
                 @error('alamat')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 f">
-                <label for="r-media_sosial">Media sosial yang dimiliki</label>
+                <label for="r-media_sosial">Tautan media sosial usaha</label>
                 <textarea id="r-media_sosial" name="media_sosial" rows="2" placeholder="Contoh: Instagram @namabrand, TikTok namabrand">{{ old('media_sosial') }}</textarea>
                 @error('media_sosial')<small class="err">{{ $message }}</small>@enderror
               </div>
@@ -196,24 +196,24 @@
           </fieldset>
 
           <fieldset>
-            <legend><span>2</span> Tentang usaha</legend>
+            <legend><span>2</span> Deskripsi &amp; Portofolio Usaha</legend>
             <div class="row g-2 g-md-3">
               <div class="col-12 f">
                 <label for="r-produk">Produk yang diajukan <i>*</i></label>
-                <textarea id="r-produk" name="produk" rows="2" required placeholder="Satu produk per baris, mis. Kain tenun, Aksesoris perak" class="@error('produk') bad @enderror">{{ old('produk') }}</textarea>
+                <textarea id="r-produk" name="produk" rows="2" required placeholder="Satu produk per baris, mis. Kain tenun endek, Kerajinan perak" class="@error('produk') bad @enderror">{{ old('produk') }}</textarea>
                 @error('produk')<small class="err">{{ $message }}</small>@enderror
               </div>
               <div class="col-12 f">
-                <label for="r-cerita_usaha">Ceritakan tentang usaha</label>
-                <textarea id="r-cerita_usaha" name="cerita_usaha" rows="3" placeholder="Sejarah singkat, keunikan bahan/desain, dan nilai kearifan lokal yang dibawa.">{{ old('cerita_usaha') }}</textarea>
+                <label for="r-cerita_usaha">Profil &amp; Nilai Tambah Usaha</label>
+                <textarea id="r-cerita_usaha" name="cerita_usaha" rows="3" placeholder="Deskripsikan sejarah singkat usaha, keunggulan bahan/desain, serta nilai kearifan lokal yang diangkat.">{{ old('cerita_usaha') }}</textarea>
                 @error('cerita_usaha')<small class="err">{{ $message }}</small>@enderror
               </div>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend><span>3</span> Foto &amp; dokumen</legend>
-            <p class="hint">Format JPG/PNG (KTP &amp; NIB boleh PDF). KTP &amp; NIB hanya untuk verifikasi internal kurator dan tidak dipublikasikan ke publik. Foto produk tampil pada kartu direktori.</p>
+            <legend><span>3</span> Berkas Verifikasi &amp; Dokumentasi</legend>
+            <p class="hint">Format JPG/PNG (KTP &amp; NIB diperkenankan format PDF). KTP &amp; NIB khusus untuk verifikasi administratif internal kurator dan tidak dipublikasikan ke publik. Foto produk akan ditampilkan pada kartu direktori.</p>
             <div class="row g-2 g-md-3">
               <div class="col-12 col-md-6 f">
                 <label for="r-foto_ktp">Foto KTP <i>*</i></label>
@@ -236,8 +236,8 @@
           </fieldset>
 
           <fieldset>
-            <legend><span>4</span> Foto legalitas usaha lain yang dimiliki</legend>
-            <p class="hint">Centang yang dimiliki, lalu unggah fotonya (HKI, HACCP, Halal, dll).</p>
+            <legend><span>4</span> Dokumen Legalitas &amp; Sertifikasi Pendukung</legend>
+            <p class="hint">Centang sertifikasi yang dimiliki, kemudian unggah dokumen pendukung (HKI, HACCP, Halal, dll).</p>
             <div class="row g-2 row-cols-1 row-cols-sm-2 legal-grid">
               @foreach(config('ekraf.legalitas') as $lg)
                 <div class="col">
@@ -252,7 +252,7 @@
           </fieldset>
 
           <fieldset>
-            <legend><span>5</span> Kesiapan stand &amp; komitmen</legend>
+            <legend><span>5</span> Kesiapan Partisipasi Kegiatan</legend>
             <div class="opt-list">
               @foreach(config('ekraf.kesiapan') as $i => $k)
                 <label class="opt"><input type="checkbox" name="kesiapan[]" value="{{ $k }}" @checked(in_array($k, $pilihSiap))> <span>{{ $k }}</span></label>
@@ -265,11 +265,11 @@
               <span>Saya menyetujui data yang saya isi dikumpulkan, disimpan, dan diolah oleh Komite Ekonomi Kreatif Kabupaten Badung untuk keperluan kurasi, koordinasi, dan kajian ekonomi kreatif, sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi. <i>*</i></span></label>
             @error('setuju_data')<small class="err">{{ $message }}</small>@enderror
             <label class="opt"><input type="checkbox" name="tampilkan_kontak" value="1" @checked(old('tampilkan_kontak'))>
-              <span>Izinkan nomor WhatsApp saya tampil di website (tombol WhatsApp pada kartu usaha). Jika tidak dicentang, nomor tidak dipublikasikan.</span></label>
+              <span>Izinkan nomor WhatsApp usaha ditampilkan pada kartu profil direktori website. Jika tidak dicentang, nomor kontak tidak dipublikasikan ke publik.</span></label>
           </div>
 
           <div class="reg-actions">
-            <button type="submit" class="btn btn-forest" data-submit><i class="bi bi-send-fill"></i>&nbsp; Kirim pendaftaran UMKM</button>
+            <button type="submit" class="btn btn-forest" data-submit><i class="bi bi-send-fill"></i>&nbsp; Kirim Formulir Pendaftaran</button>
             <a href="{{ route('dashboard') }}" class="btn btn-ghost"><i class="bi bi-speedometer2"></i>&nbsp; Panel Dashboard</a>
           </div>
         </form>

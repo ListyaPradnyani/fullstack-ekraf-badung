@@ -29,22 +29,40 @@
   $("#program-grid").innerHTML = D.program
     .map((p, i) => `<article class="p-row reveal ${i % 2 ? "reveal-right" : "reveal-left"}">${photo(p.img, "", i + 1, p.name)}<div><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p></div></article>`).join("");
 
-  $("#event-grid").innerHTML = D.event.map((e, i) => {
-    const t = parseISO(e.date);
-    const meta = [`<p><i class="bi bi-geo-alt-fill"></i> ${esc(e.loc)}</p>`, e.time ? `<p><i class="bi bi-clock"></i> ${esc(e.time)}</p>` : ""].join("");
-    return `<a class="e-card reveal" ${delay(i)} href="#calendar" aria-label="${esc(e.name)}, ${t.d} ${MONTHS[t.m]}">
-      <div class="e-thumb">${photo(e.img, "arch", i, e.name)}<div class="date-badge"><b>${String(t.d).padStart(2, "0")}</b><small>${MONTHS_SHORT[t.m]}</small></div></div>
-      <div class="e-body"><span class="tag">Event</span><h3>${esc(e.name)}</h3>${meta}</div>
-      <span class="e-go" aria-hidden="true"><i class="bi bi-arrow-up-right"></i></span></a>`;
-  }).join("");
+  $("#event-grid").innerHTML = (D.event && D.event.length)
+    ? D.event.map((e, i) => {
+        const t = parseISO(e.date);
+        const meta = [`<p><i class="bi bi-geo-alt-fill"></i> ${esc(e.loc)}</p>`, e.time ? `<p><i class="bi bi-clock"></i> ${esc(e.time)}</p>` : ""].join("");
+        return `<a class="e-card reveal" ${delay(i)} href="#calendar" data-date="${esc(e.date)}" aria-label="${esc(e.name)}, ${t.d} ${MONTHS[t.m]}">
+          <div class="e-thumb">${photo(e.img, "arch", i, e.name)}<div class="date-badge"><b>${String(t.d).padStart(2, "0")}</b><small>${MONTHS_SHORT[t.m]}</small></div></div>
+          <div class="e-body"><span class="tag">Agenda Resmi</span><h3>${esc(e.name)}</h3>${meta}</div>
+          <span class="e-go" aria-hidden="true"><i class="bi bi-arrow-up-right"></i></span></a>`;
+      }).join("")
+    : `<p class="empty text-center w-100 py-4">Belum ada agenda kegiatan mendatang yang dijadwalkan.</p>`;
 
-  /* ===== UMKM: filter + pencarian + popup ===== */
+  $("#event-grid").addEventListener("click", e => {
+    const card = e.target.closest(".e-card[data-date]");
+    if (!card) return;
+    const dateStr = card.dataset.date;
+    if (dateStr) {
+      const parsed = parseISO(dateStr);
+      view.y = parsed.y;
+      view.m = parsed.m;
+      selected = dateStr;
+      renderCal();
+    }
+  });
+
+  /* ===== UMKM: filter + pencarian + pagination + popup ===== */
   const cats = ["Semua", "Fashion", "Kriya"];
   const filters = $("#umkm-filters");
   const grid = $("#umkm-grid");
   const input = $("#umkm-search");
+  const paginationEl = $("#umkm-pagination");
   let activeCat = "Semua";
   let firstRender = true;
+  let currentPage = 1;
+  const PER_PAGE = 6; // 6 UMKM per halaman (2 baris x 3 kolom di desktop)
 
   filters.innerHTML = cats.map((c, i) => `<button class="filter${i === 0 ? " active" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
 
@@ -56,14 +74,67 @@
     return c === filter.toLowerCase();
   };
 
-  function renderUmkm() {
+  function renderPagination(totalItems, totalPages) {
+    if (!paginationEl) return;
+    if (totalItems === 0 || totalPages <= 1) {
+      paginationEl.innerHTML = totalItems > 0 
+        ? `<div class="pg-info text-center w-100">Menampilkan seluruh ${totalItems} pelaku usaha terdaftar</div>`
+        : "";
+      return;
+    }
+
+    const startItem = (currentPage - 1) * PER_PAGE + 1;
+    const endItem = Math.min(currentPage * PER_PAGE, totalItems);
+
+    // Hitung tombol nomor halaman yang ditampilkan
+    const pages = [];
+    if (totalPages <= 7) {
+      for (let p = 1; p <= totalPages; p++) pages.push(p);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let p = start; p <= end; p++) pages.push(p);
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+
+    const btnsHtml = pages.map(p => {
+      if (p === "...") return `<span class="pg-ellipsis">…</span>`;
+      const isCur = p === currentPage;
+      return `<button type="button" class="pg-btn pg-num${isCur ? " active" : ""}" data-pg="${p}" aria-label="Halaman ${p}" ${isCur ? 'aria-current="page"' : ""}>${p}</button>`;
+    }).join("");
+
+    paginationEl.innerHTML = `
+      <div class="pg-wrap">
+        <button type="button" class="pg-btn pg-nav pg-prev" data-pg="${currentPage - 1}" ${currentPage <= 1 ? "disabled" : ""} aria-label="Halaman sebelumnya">
+          <i class="bi bi-chevron-left"></i> <span>Sebelumnya</span>
+        </button>
+        <div class="pg-numbers">${btnsHtml}</div>
+        <button type="button" class="pg-btn pg-nav pg-next" data-pg="${currentPage + 1}" ${currentPage >= totalPages ? "disabled" : ""} aria-label="Halaman berikutnya">
+          <span>Selanjutnya</span> <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+      <div class="pg-info">Menampilkan <b>${startItem}–${endItem}</b> dari <b>${totalItems}</b> pelaku usaha</div>
+    `;
+  }
+
+  function renderUmkm(shouldScroll = false) {
     const q = input.value.trim().toLowerCase();
     const list = D.umkm.map((u, idx) => ({ u, idx })).filter(({ u }) =>
       matchCat(u.cat, activeCat) &&
       (u.name.toLowerCase().includes(q) || (u.loc && u.loc.toLowerCase().includes(q))));
+
+    const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = 1;
+
+    const startIdx = (currentPage - 1) * PER_PAGE;
+    const pagedList = list.slice(startIdx, startIdx + PER_PAGE);
+
     const anim = firstRender ? "reveal" : "pop";
-    grid.innerHTML = list.length
-      ? list.map(({ u, idx }, i) => `
+    grid.innerHTML = pagedList.length
+      ? pagedList.map(({ u, idx }, i) => `
         <article class="u-card ${anim}" ${delay(i)} role="button" tabindex="0" data-i="${idx}" aria-haspopup="dialog" aria-label="Lihat detail ${esc(u.name)}">
           <div class="u-media">${photo(u.img, "", idx, u.name)}<span class="tag">${esc(u.cat)}</span></div>
           <div class="u-body">
@@ -73,17 +144,43 @@
             <span class="u-more">Lihat detail <i class="bi bi-arrow-up-right"></i></span>
           </div>
         </article>`).join("")
-      : `<p class="empty">Belum ketemu. Coba kata kunci atau kategori lain ya.</p>`;
+      : `<p class="empty text-center w-100 py-4">Data pelaku usaha tidak ditemukan. Silakan gunakan kata kunci pencarian atau kategori lain.</p>`;
+
+    renderPagination(list.length, totalPages);
     firstRender = false;
+
+    if (shouldScroll && grid) {
+      const topOffset = grid.getBoundingClientRect().top + window.scrollY - 110;
+      window.scrollTo({ top: topOffset, behavior: "smooth" });
+    }
   }
+
   filters.addEventListener("click", e => {
     const b = e.target.closest(".filter");
     if (!b) return;
     activeCat = b.dataset.cat;
     $$(".filter", filters).forEach(f => f.classList.toggle("active", f === b));
+    currentPage = 1;
     renderUmkm();
   });
-  input.addEventListener("input", renderUmkm);
+
+  input.addEventListener("input", () => {
+    currentPage = 1;
+    renderUmkm();
+  });
+
+  if (paginationEl) {
+    paginationEl.addEventListener("click", e => {
+      const btn = e.target.closest(".pg-btn[data-pg]");
+      if (!btn || btn.disabled) return;
+      const targetPage = +btn.dataset.pg;
+      if (targetPage && targetPage !== currentPage) {
+        currentPage = targetPage;
+        renderUmkm(true);
+      }
+    });
+  }
+
   renderUmkm();
 
   /* --- Popup detail UMKM --- */
@@ -91,7 +188,7 @@
   let lastFocus = null;
 
   function fillModal(u, idx) {
-    const wa = u.wa ? `https://wa.me/${encodeURIComponent(u.wa)}?text=${encodeURIComponent("Halo " + u.name + ", saya lihat info di website Ekraf Badung.")}` : "";
+    const wa = u.wa ? `https://wa.me/${encodeURIComponent(u.wa)}?text=${encodeURIComponent("Halo " + u.name + ", saya memperoleh informasi kontak melalui Portal Resmi Komite Ekonomi Kreatif Kabupaten Badung.")}` : "";
     const ig = u.ig ? `https://instagram.com/${encodeURIComponent(u.ig)}` : "";
     const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(u.name + " " + (u.loc || "") + " Badung")}`;
     $("#m-media").innerHTML = u.img
@@ -224,7 +321,7 @@
           const meta = [e.time && `<i class="bi bi-clock"></i> ${esc(e.time)}`, e.loc && `<i class="bi bi-geo-alt-fill"></i> ${esc(e.loc)}`].filter(Boolean).join("  ");
           return `<div class="ag pop" style="--d:${i * 70}ms"><div class="ag-date"><div><b>${String(t.d).padStart(2, "0")}</b><small>${MONTHS_SHORT[t.m]}</small></div></div><div><h5>${esc(e.name)}</h5><span>${meta}</span></div></div>`;
         }).join("")
-      : `<p class="empty">Belum ada kegiatan di sini. Santai dulu~</p>`;
+      : `<p class="empty text-center w-100 py-3">Belum ada agenda kegiatan resmi pada periode yang dipilih.</p>`;
   }
 
   /* ===== Shortcut Pemilih Bulan & Tahun (Popover) ===== */
